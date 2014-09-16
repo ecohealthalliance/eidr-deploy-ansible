@@ -1,0 +1,12 @@
+---
+
+- hosts: grid
+  roles:
+    - common
+    - apache
+    - mongodb
+    - node
+    - { role: grid, sudo_user: "{{ grid_user }}" }
+  vars_files:
+    - secure.yml
+  sudo: yes
