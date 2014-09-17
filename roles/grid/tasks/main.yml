@@ -1,0 +1,60 @@
+---
+
+  - name: Install meteor
+    shell: curl https://install.meteor.com | /bin/sh chdir=/tmp creates=/usr/local/bin/meteor
+    sudo: yes
+    sudo_user: root
+
+  - name: Copy grid source
+    copy: src=grid/ dest={{ grid_prefix }}-source
+    register: grid_copy
+
+  # The source directory is kept separate so it doesn't appear to be changed
+  # because of the subsequent processing
+  - name: Copy grid source to deployment directory
+    command: cp -r {{ grid_prefix }}-source {{ grid_prefix }}
+    when: grid_copy.changed
+
+  - name: Create config
+    template: src=config.j2 dest={{ grid_prefix }}/config mode=0755
+
+  - name: Remove node_modules directory
+    file: path={{ grid_prefix }}/node_modules state=absent
+    sudo: yes
+    sudo_user: root
+
+  - name: Remove bundle directory
+    file: path={{ grid_prefix }}/bundle state=absent
+    when: grid_copy.changed
+
+  - name: meteor bundle
+    command: meteor bundle bundle.tgz chdir={{ grid_prefix }}
+    when: grid_copy.changed
+
+  - name: Unarchive bundle
+    unarchive: src={{ grid_prefix }}/bundle.tgz dest={{ grid_prefix }} copy=no
+    when: grid_copy.changed
+
+  - name: Install fibers by npm into bundle
+    npm: name=fibers production=yes path={{ grid_prefix }}/bundle/programs/server
+    when: grid_copy.changed
+
+  - name: Install underscore by npm into bundle
+    npm: name=underscore production=yes path={{ grid_prefix }}/bundle/programs/server
+    when: grid_copy.changed
+
+  - name: Install source-map-support by npm into bundle
+    npm: name=source-map-support production=yes path={{ grid_prefix }}/bundle/programs/server
+    when: grid_copy.changed
+
+  - name: Install semver by npm into bundle
+    npm: name=semver production=yes path={{ grid_prefix }}/bundle/programs/server
+    when: grid_copy.changed
+
+  - name: Install supervisord config
+    template: src=gridd.conf.j2 dest=/etc/supervisor/conf.d/gridd.conf
+    sudo: yes
+    sudo_user: root
+    notify: reload supervisor
+    with_items:
+      - grid

@@ -1,0 +1,10 @@
+---
+
+grid_user: grid
+grid_group: grid
+grid_prefix: "/home/{{ grid_user }}/grid"
+apache_url: http://grid.ecohealth.io
+mongo_url: localhost
+meteor_port: 3001
+meteor_db_name: grid
+meteor_mongo: "mongodb://localhost:27017/{{ meteor_db_name }}"

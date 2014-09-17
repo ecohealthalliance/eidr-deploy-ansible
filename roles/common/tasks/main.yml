@@ -1,0 +1,25 @@
+---
+
+- name: Install common packages from apt
+  apt: pkg={{item}} state=installed update_cache=yes
+  sudo: True
+  with_items:
+    - git
+    - python-pip
+    - python-dev
+    - supervisor
+
+- name: Install global python modules
+  pip: name={{item}}
+  sudo: True
+  with_items:
+    - virtualenv
+
+- name: Create grid group
+  user: name={{ grid_group }}
+
+- name: Create grid user
+  user: name={{ grid_user }} group={{ grid_group }} shell=/bin/bash
+
+- name: Create grid environment configuration
+  template: src=config.j2 dest=/home/{{ grid_user }}/grid_config group={{ grid_group }} owner={{ grid_user }}
