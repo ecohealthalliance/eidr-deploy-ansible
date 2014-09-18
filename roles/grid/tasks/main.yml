@@ -22,11 +22,6 @@
   - name: Create config
     template: src=meteor_config.j2 dest={{ grid_prefix }}-deploy/config mode=0755
 
-  - name: Remove node_modules directory
-    file: path={{ grid_prefix }}-deploy/node_modules state=absent
-    sudo: yes
-    sudo_user: root
-
   - name: Remove bundle directory
     file: path={{ grid_prefix }}-deploy/bundle state=absent
     when: grid_copy.changed
@@ -76,3 +71,9 @@
     shell: "env/bin/python import_from_spreadsheets.py"
     args:
       chdir: "{{ grid_prefix }}-scripts"
+
+  - name: Restart grid process
+    supervisorctl: name="grid" state=restarted
+    when: grid_copy.changed
+    sudo: yes
+    sudo_user: root

@@ -17,3 +17,4 @@ events_spreadsheet_id: 0Aq1-11VlGrfldHd0eHhFQkx4a09xR2JJTERyaVZnVWc
 zotero_library_id: 252452
 zotero_library_type: group
 zotero_api_key: "{{ zotero_api_key }}"
+analytics_api_key: "{{ analytics_api_key }}"
