@@ -7,4 +7,13 @@ apache_url: http://grid.ecohealth.io
 mongo_url: localhost
 meteor_port: 3001
 meteor_db_name: grid
-meteor_mongo: "mongodb://localhost:27017/{{ meteor_db_name }}"
+meteor_mongo_port: 27017
+meteor_mongo: "mongodb://localhost:{{ meteor_mongo_port }}/{{ meteor_db_name }}"
+
+google_user: "{{ google_user }}"
+google_password: "{{ google_password }}"
+fields_spreadsheet_id: 1lPVgmRQiqkPqWpjCRvglT7PPrGFPw5CDAsxKa7YKjg8
+events_spreadsheet_id: 0Aq1-11VlGrfldHd0eHhFQkx4a09xR2JJTERyaVZnVWc
+zotero_library_id: 252452
+zotero_library_type: group
+zotero_api_key: "{{ zotero_api_key }}"

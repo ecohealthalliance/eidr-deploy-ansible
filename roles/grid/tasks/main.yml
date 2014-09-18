@@ -9,46 +9,50 @@
     copy: src=grid/ dest={{ grid_prefix }}-source
     register: grid_copy
 
+  - name: Remove grid-deploy directory
+    file: path={{ grid_prefix }}-deploy state=absent
+    when: grid_copy.changed
+
   # The source directory is kept separate so it doesn't appear to be changed
   # because of the subsequent processing
   - name: Copy grid source to deployment directory
-    command: cp -r {{ grid_prefix }}-source {{ grid_prefix }}
+    command: cp -r {{ grid_prefix }}-source {{ grid_prefix }}-deploy
     when: grid_copy.changed
 
   - name: Create config
-    template: src=config.j2 dest={{ grid_prefix }}/config mode=0755
+    template: src=meteor_config.j2 dest={{ grid_prefix }}-deploy/config mode=0755
 
   - name: Remove node_modules directory
-    file: path={{ grid_prefix }}/node_modules state=absent
+    file: path={{ grid_prefix }}-deploy/node_modules state=absent
     sudo: yes
     sudo_user: root
 
   - name: Remove bundle directory
-    file: path={{ grid_prefix }}/bundle state=absent
+    file: path={{ grid_prefix }}-deploy/bundle state=absent
     when: grid_copy.changed
 
   - name: meteor bundle
-    command: meteor bundle bundle.tgz chdir={{ grid_prefix }}
+    command: meteor bundle bundle.tgz chdir={{ grid_prefix }}-deploy
     when: grid_copy.changed
 
   - name: Unarchive bundle
-    unarchive: src={{ grid_prefix }}/bundle.tgz dest={{ grid_prefix }} copy=no
+    unarchive: src={{ grid_prefix }}-deploy/bundle.tgz dest={{ grid_prefix }}-deploy copy=no
     when: grid_copy.changed
 
   - name: Install fibers by npm into bundle
-    npm: name=fibers production=yes path={{ grid_prefix }}/bundle/programs/server
+    npm: name=fibers production=yes path={{ grid_prefix }}-deploy/bundle/programs/server
     when: grid_copy.changed
 
   - name: Install underscore by npm into bundle
-    npm: name=underscore production=yes path={{ grid_prefix }}/bundle/programs/server
+    npm: name=underscore production=yes path={{ grid_prefix }}-deploy/bundle/programs/server
     when: grid_copy.changed
 
   - name: Install source-map-support by npm into bundle
-    npm: name=source-map-support production=yes path={{ grid_prefix }}/bundle/programs/server
+    npm: name=source-map-support production=yes path={{ grid_prefix }}-deploy/bundle/programs/server
     when: grid_copy.changed
 
   - name: Install semver by npm into bundle
-    npm: name=semver production=yes path={{ grid_prefix }}/bundle/programs/server
+    npm: name=semver production=yes path={{ grid_prefix }}-deploy/bundle/programs/server
     when: grid_copy.changed
 
   - name: Install supervisord config
@@ -58,3 +62,17 @@
     notify: reload supervisor
     with_items:
       - grid
+
+  - name: Copy grid scripts
+    copy: src=grid/.scripts/ dest={{ grid_prefix }}-scripts
+
+  - name: Create import config
+    template: src=import_config.j2 dest={{ grid_prefix }}-scripts/config.py
+
+  - name: Set up import python environment
+    pip: requirements={{ grid_prefix }}-scripts/requirements.txt virtualenv={{ grid_prefix }}-scripts/env
+
+  - name: Run import
+    shell: "env/bin/python import_from_spreadsheets.py"
+    args:
+      chdir: "{{ grid_prefix }}-scripts"
