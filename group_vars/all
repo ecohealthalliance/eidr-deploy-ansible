@@ -9,10 +9,12 @@ meteor_port: 3001
 meteor_db_name: grid
 mongo_host: localhost
 mongo_port: 27017
+meteor_mongo_port: "{{mongo_port}}"
 meteor_mongo: "mongodb://{{mongo_host}}:{{mongo_port}}/{{ meteor_db_name }}"
 
 elasticsearch_version: 1.2.2
-elasticsearch_heap_size: 1g
+elasticsearch_heap_size: 512m
+elasticsearch_max_locked_memory: 1g
 elasticsearch_max_open_files: 65535
 elasticsearch_timezone: "America/New_York"
 elasticsearch_node_max_local_storage_nodes: 1
@@ -55,7 +57,7 @@ es_item_template_source:
     # I'm using ignore_malformed for now so that
     # the NaN values in the case counts don't cause exceptions.
     # TODO: This should be disabled eventually when the NaNs are removed.
-    # index.mapping.ignore_malformed : true
+    index.mapping.ignore_malformed : true
   mappings:
     item:
       dynamic_date_formats: "yyyy-MM-dd HH:mm:ss||yyyy-MM-dd HH:mm:ss.SSSSSS||date_optional_time||date_time"

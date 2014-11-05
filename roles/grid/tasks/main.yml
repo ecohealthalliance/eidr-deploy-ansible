@@ -59,16 +59,20 @@
       - grid
 
   - name: Copy grid scripts
+    tags: [import]
     copy: src=grid/.scripts/ dest={{ grid_prefix }}-scripts
 
   - name: Create import config
+    tags: [import]
     template: src=import_config.j2 dest={{ grid_prefix }}-scripts/config.py
 
   - name: Set up import python environment
+    tags: [import]
     pip: requirements={{ grid_prefix }}-scripts/requirements.txt virtualenv={{ grid_prefix }}-scripts/env
 
   - name: Run import
     shell: "env/bin/python import_from_spreadsheets.py"
+    tags: [import]
     args:
       chdir: "{{ grid_prefix }}-scripts"
 
