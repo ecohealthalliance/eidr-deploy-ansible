@@ -11,7 +11,6 @@ mongo_host: localhost
 mongo_port: 27017
 meteor_mongo: "mongodb://{{mongo_host}}:{{mongo_port}}/{{ meteor_db_name }}"
 
-
 elasticsearch_version: 1.2.2
 elasticsearch_heap_size: 1g
 elasticsearch_max_open_files: 65535
@@ -60,3 +59,12 @@ es_item_template_source:
   mappings:
     item:
       dynamic_date_formats: "yyyy-MM-dd HH:mm:ss||yyyy-MM-dd HH:mm:ss.SSSSSS||date_optional_time||date_time"
+
+google_user: "{{ google_user }}"
+google_password: "{{ google_password }}"
+fields_spreadsheet_id: 1lPVgmRQiqkPqWpjCRvglT7PPrGFPw5CDAsxKa7YKjg8
+events_spreadsheet_id: 0Aq1-11VlGrfldHd0eHhFQkx4a09xR2JJTERyaVZnVWc
+zotero_library_id: 252452
+zotero_library_type: group
+zotero_api_key: "{{ zotero_api_key }}"
+analytics_api_key: "{{ analytics_api_key }}"
