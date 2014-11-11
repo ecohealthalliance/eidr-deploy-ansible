@@ -40,8 +40,9 @@ river_config:
       - host: "{{mongo_host}}"
         port: "{{mongo_port}}"
     options:
-      # drop_collection should cause the ES index to drop if we restore 
-      # the girder index from a backup.
+      # drop_collection *should* cause the ES index to drop
+      # if we restore from a backup.
+      # However, I've encoutered problems when doing this.
       drop_collection: events
       exclude_fields: []
   index:
@@ -54,9 +55,8 @@ river_config:
 es_item_template_source:
   template: item_index
   settings:
-    # I'm using ignore_malformed for now so that
-    # the NaN values in the case counts don't cause exceptions.
-    # TODO: This should be disabled eventually when the NaNs are removed.
+    # I'm using ignore_malformed for now so that NA values don't cause exceptions.
+    # TODO: Find another way to handle these.
     index.mapping.ignore_malformed : true
   mappings:
     item:
