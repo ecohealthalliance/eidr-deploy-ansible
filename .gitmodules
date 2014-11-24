@@ -1,6 +1,6 @@
 [submodule "grid"]
 	path = grid
 	url = git@github.com:ecohealthalliance/grid.git
-[submodule "ansible-elasticsearch"]
-	path = ansible-elasticsearch
+[submodule "roles/ansible-elasticsearch"]
+	path = roles/ansible-elasticsearch
 	url = https://github.com/Traackr/ansible-elasticsearch.git
