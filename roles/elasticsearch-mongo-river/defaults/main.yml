@@ -1,0 +1,28 @@
+---
+river_config:
+  type: mongodb
+  mongodb:
+    db: "{{meteor_db_name}}"
+    collection: "{{river_collection}}"
+    gridfs: "false"
+    servers:
+      - host: "{{mongo_host}}"
+        port: "{{mongo_port}}"
+    options:
+      # drop_collection *should* cause the ES index to drop
+      # if we restore from a backup.
+      # However, I've encoutered problems when doing this.
+      drop_collection: "{{river_collection}}"
+      exclude_fields: []
+  index:
+    name: item_index
+    type: item
+  logger:
+    river.mongodb: TRACE
+    rest.action: TRACE
+    org.elasticsearch.river.mongodb.MongoDBRiver: TRACE
+es_item_template_source:
+  template: item_index
+  mappings:
+    item:
+      dynamic_date_formats: "yyyy-MM-dd HH:mm:ss||yyyy-MM-dd HH:mm:ss.SSSSSS||date_optional_time||date_time"
