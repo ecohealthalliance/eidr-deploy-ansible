@@ -39,6 +39,11 @@ es_item_template_source:
   mappings:
     item:
       dynamic_date_formats: "yyyy-MM-dd HH:mm:ss||yyyy-MM-dd HH:mm:ss.SSSSSS||date_optional_time||date_time"
+      properties:
+        # don't tokenize countries
+        locationNation:
+          type: string
+          index: not_analyzed
 google_user: "{{ google_user }}"
 google_password: "{{ google_password }}"
 fields_spreadsheet_id: 1lPVgmRQiqkPqWpjCRvglT7PPrGFPw5CDAsxKa7YKjg8
