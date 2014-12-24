@@ -7,4 +7,48 @@ apache_url: http://grid.ecohealth.io
 mongo_url: localhost
 meteor_port: 3001
 meteor_db_name: grid
-meteor_mongo: "mongodb://localhost:27017/{{ meteor_db_name }}"
+mongo_host: localhost
+mongo_port: 27017
+meteor_mongo_port: "{{mongo_port}}"
+meteor_mongo: "mongodb://{{mongo_host}}:{{mongo_port}}/{{ meteor_db_name }}"
+elasticsearch_version: 1.2.2
+elasticsearch_heap_size: 512m
+elasticsearch_max_locked_memory: 1g
+elasticsearch_max_open_files: 65535
+elasticsearch_timezone: "America/New_York"
+elasticsearch_node_max_local_storage_nodes: 1
+elasticsearch_index_mapper_dynamic: "true"
+elasticsearch_memory_bootstrap_mlockall: "true"
+elasticsearch_max_locked_memory: unlimited
+elasticsearch_install_java: "true"
+elasticsearch_plugins:
+  - { name: 'elasticsearch/elasticsearch-mapper-attachments/2.2.1' }
+  - { name: 'com.github.richardwilly98.elasticsearch/elasticsearch-river-mongodb/2.0.1' }
+  - { name: 'facet-script', url: 'http://dl.bintray.com/content/imotov/elasticsearch-plugins/elasticsearch-facet-script-1.1.2.zip' }
+elasticsearch_thread_pools:
+  - "threadpool.bulk.type: fixed"
+  - "threadpool.bulk.size: 50"
+  - "threadpool.bulk.queue_size: 1000"
+river_collection: events
+es_item_template_source:
+  template: item_index
+  settings:
+    # I'm using ignore_malformed for now so that NA values don't cause exceptions.
+    # TODO: Find another way to handle these.
+    index.mapping.ignore_malformed : true
+  mappings:
+    item:
+      dynamic_date_formats: "yyyy-MM-dd HH:mm:ss||yyyy-MM-dd HH:mm:ss.SSSSSS||date_optional_time||date_time"
+      properties:
+        # don't tokenize countries
+        locationNation:
+          type: string
+          index: not_analyzed
+google_user: "{{ google_user }}"
+google_password: "{{ google_password }}"
+fields_spreadsheet_id: 1lPVgmRQiqkPqWpjCRvglT7PPrGFPw5CDAsxKa7YKjg8
+events_spreadsheet_id: 0Aq1-11VlGrfldHd0eHhFQkx4a09xR2JJTERyaVZnVWc
+zotero_library_id: 252452
+zotero_library_type: group
+zotero_api_key: "{{ zotero_api_key }}"
+analytics_api_key: "{{ analytics_api_key }}"
