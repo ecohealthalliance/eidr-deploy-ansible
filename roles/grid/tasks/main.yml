@@ -5,6 +5,9 @@
     sudo: yes
     sudo_user: root
     
+  - name: Create .ssh directory
+    file: path=~/.ssh group={{ grid_group }} owner={{ grid_user }} state=directory
+    
   - name: Create github key
     copy: content="{{git_key}}" dest=~/.ssh/id_rsa mode="0700"
     
