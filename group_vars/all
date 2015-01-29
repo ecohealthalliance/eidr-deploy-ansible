@@ -1,5 +1,6 @@
 ---
 
+grid_git_version: "master"
 grid_user: grid
 grid_group: grid
 grid_prefix: "/home/{{ grid_user }}/grid"
