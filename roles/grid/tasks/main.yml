@@ -4,51 +4,57 @@
     shell: curl https://install.meteor.com | /bin/sh chdir=/tmp creates=/usr/local/bin/meteor
     sudo: yes
     sudo_user: root
-
-  - name: Copy grid source
-    copy: src=grid/ dest={{ grid_prefix }}-source
-    register: grid_copy
-
-  - name: Remove grid-deploy directory
-    file: path={{ grid_prefix }}-deploy state=absent
-    when: grid_copy.changed
-
-  # The source directory is kept separate so it doesn't appear to be changed
-  # because of the subsequent processing
-  - name: Copy grid source to deployment directory
-    command: cp -r {{ grid_prefix }}-source {{ grid_prefix }}-deploy
-    when: grid_copy.changed
+    
+  - name: Create .ssh directory
+    file: path=~/.ssh group={{ grid_group }} owner={{ grid_user }} state=directory
+    
+  - name: Create github key
+    copy: content="{{git_key}}" dest=~/.ssh/id_rsa mode="0700"
+    
+  - name: Sync grid code
+    git: 
+      repo: git@github.com:ecohealthalliance/grid.git
+      dest: "{{ grid_prefix }}"
+      accept_hostkey: yes
+      version: "{{ grid_git_version }}"
+    register: grid
+  
+  - name: Remove untracked files
+    shell: "git clean -f"
+    args:
+      chdir: "{{ grid_prefix }}"
+    when: grid.changed
 
   - name: Create config
-    template: src=meteor_config.j2 dest={{ grid_prefix }}-deploy/config mode=0755
+    template: src=meteor_config.j2 dest={{ grid_prefix }}/config mode=0755
 
   - name: Remove bundle directory
-    file: path={{ grid_prefix }}-deploy/bundle state=absent
-    when: grid_copy.changed
+    file: path={{ grid_prefix }}/bundle state=absent
+    when: grid.changed
 
   - name: meteor bundle
-    command: meteor bundle bundle.tgz chdir={{ grid_prefix }}-deploy
-    when: grid_copy.changed
+    command: meteor bundle bundle.tgz chdir={{ grid_prefix }}
+    when: grid.changed
 
   - name: Unarchive bundle
-    unarchive: src={{ grid_prefix }}-deploy/bundle.tgz dest={{ grid_prefix }}-deploy copy=no
-    when: grid_copy.changed
+    unarchive: src={{ grid_prefix }}/bundle.tgz dest={{ grid_prefix }} copy=no
+    when: grid.changed
 
   - name: Install fibers by npm into bundle
-    npm: name=fibers production=yes path={{ grid_prefix }}-deploy/bundle/programs/server
-    when: grid_copy.changed
+    npm: name=fibers production=yes path={{ grid_prefix }}/bundle/programs/server
+    when: grid.changed
 
   - name: Install underscore by npm into bundle
-    npm: name=underscore production=yes path={{ grid_prefix }}-deploy/bundle/programs/server
-    when: grid_copy.changed
+    npm: name=underscore production=yes path={{ grid_prefix }}/bundle/programs/server
+    when: grid.changed
 
   - name: Install source-map-support by npm into bundle
-    npm: name=source-map-support production=yes path={{ grid_prefix }}-deploy/bundle/programs/server
-    when: grid_copy.changed
+    npm: name=source-map-support production=yes path={{ grid_prefix }}/bundle/programs/server
+    when: grid.changed
 
   - name: Install semver by npm into bundle
-    npm: name=semver production=yes path={{ grid_prefix }}-deploy/bundle/programs/server
-    when: grid_copy.changed
+    npm: name=semver production=yes path={{ grid_prefix }}/bundle/programs/server
+    when: grid.changed
 
   - name: Install supervisord config
     template: src=gridd.conf.j2 dest=/etc/supervisor/conf.d/gridd.conf
@@ -58,26 +64,22 @@
     with_items:
       - grid
 
-  - name: Copy grid scripts
-    tags: [import]
-    copy: src=grid/.scripts/ dest={{ grid_prefix }}-scripts
-
   - name: Create import config
     tags: [import]
-    template: src=import_config.j2 dest={{ grid_prefix }}-scripts/config.py
+    template: src=import_config.j2 dest={{ grid_prefix }}/.scripts/config.py
 
   - name: Set up import python environment
     tags: [import]
-    pip: requirements={{ grid_prefix }}-scripts/requirements.txt virtualenv={{ grid_prefix }}-scripts/env
+    pip: requirements={{ grid_prefix }}/.scripts/requirements.txt virtualenv={{ grid_prefix }}/.scripts/env
 
   - name: Run import
     shell: "env/bin/python import_from_spreadsheets.py"
     tags: [import]
     args:
-      chdir: "{{ grid_prefix }}-scripts"
+      chdir: "{{ grid_prefix }}/.scripts"
 
   - name: Restart grid process
     supervisorctl: name="grid" state=restarted
-    when: grid_copy.changed
+    when: grid.changed
     sudo: yes
     sudo_user: root
