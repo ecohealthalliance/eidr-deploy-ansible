@@ -3,7 +3,6 @@
 grid_user: grid
 grid_group: grid
 grid_prefix: "/home/{{ grid_user }}/grid"
-apache_url: http://grid.ecohealth.io
 mongo_url: localhost
 meteor_port: 3001
 meteor_db_name: grid
@@ -52,3 +51,5 @@ zotero_library_id: 252452
 zotero_library_type: group
 zotero_api_key: "{{ zotero_api_key }}"
 analytics_api_key: "{{ analytics_api_key }}"
+google_oauth_client_id: "{{ google_oauth_client_id }}"
+google_oauth_client_secret: "{{ google_oauth_client_secret }}"

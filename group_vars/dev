@@ -1,3 +1,4 @@
 ---
 
 grid_git_version: "dev"
+apache_url: "http://eidr-dev.ecohealth.io"
