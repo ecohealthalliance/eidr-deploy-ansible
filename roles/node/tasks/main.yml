@@ -4,7 +4,7 @@
   apt_repository: repo='ppa:chris-lea/node.js'
 
 - name: Install node with dependencies
-  apt: name={{item}} state=installed
+  apt: name={{item}} state=latest
   with_items:
     - python-software-properties
     - python
