@@ -8,6 +8,7 @@
     with_items:
       - proxy
       - proxy_http
+      - proxy_wstunnel
       - rewrite
 
   - name: Configure apache proxy

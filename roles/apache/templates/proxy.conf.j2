@@ -2,6 +2,9 @@
   ServerName {{ apache_url }}
   ProxyPreserveHost On
   RewriteEngine on
+  RewriteCond %{HTTP:UPGRADE} ^WebSocket$ [NC]
+  RewriteCond %{HTTP:CONNECTION} ^Upgrade$ [NC]
+  RewriteRule .* ws://localhost:{{ meteor_port }}%{REQUEST_URI} [P]
   ProxyPass / http://localhost:{{ meteor_port }}/
   ProxyPassReverse / http://localhost:{{ meteor_port }}/
 </VirtualHost>
