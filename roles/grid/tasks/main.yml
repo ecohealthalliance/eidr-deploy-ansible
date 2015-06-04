@@ -28,32 +28,16 @@
   - name: Create config
     template: src=meteor_config.j2 dest={{ grid_prefix }}/config mode=0755
 
-  - name: Remove bundle directory
-    file: path={{ grid_prefix }}/bundle state=absent
+  - name: Remove build directory
+    file: path={{ grid_prefix }}/build state=absent
     when: grid.changed
 
   - name: meteor bundle
-    command: meteor bundle bundle.tgz chdir={{ grid_prefix }}
+    command: meteor build build chdir={{ grid_prefix }}
     when: grid.changed
 
   - name: Unarchive bundle
-    unarchive: src={{ grid_prefix }}/bundle.tgz dest={{ grid_prefix }} copy=no
-    when: grid.changed
-
-  - name: Install fibers by npm into bundle
-    npm: name=fibers production=yes path={{ grid_prefix }}/bundle/programs/server
-    when: grid.changed
-
-  - name: Install underscore by npm into bundle
-    npm: name=underscore production=yes path={{ grid_prefix }}/bundle/programs/server
-    when: grid.changed
-
-  - name: Install source-map-support by npm into bundle
-    npm: name=source-map-support production=yes path={{ grid_prefix }}/bundle/programs/server
-    when: grid.changed
-
-  - name: Install semver by npm into bundle
-    npm: name=semver production=yes path={{ grid_prefix }}/bundle/programs/server
+    unarchive: src={{ grid_prefix }}/build/grid.tar.gz dest={{ grid_prefix }} copy=no
     when: grid.changed
 
   - name: Install supervisord config
