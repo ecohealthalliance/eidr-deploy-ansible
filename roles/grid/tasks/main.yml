@@ -68,6 +68,5 @@
 
   - name: Restart grid process
     supervisorctl: name="grid" state=restarted
-    when: grid.changed
     sudo: yes
     sudo_user: root
