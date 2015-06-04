@@ -27,7 +27,11 @@
 
   - name: Create config
     template: src=meteor_config.j2 dest={{ grid_prefix }}/config mode=0755
-
+ 
+  - name: Remove bundle directory in case we're updating from bundle
+    file: path={{ grid_prefix }}/bundle state=absent
+    when: grid.changed
+ 
   - name: Remove build directory
     file: path={{ grid_prefix }}/build state=absent
     when: grid.changed
