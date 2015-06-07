@@ -43,6 +43,12 @@
   - name: Unarchive bundle
     unarchive: src={{ grid_prefix }}/build/grid.tar.gz dest={{ grid_prefix }} copy=no
     when: grid.changed
+    
+  - name: Install npm modules
+    command: npm install
+    args:
+      chdir: "{{ grid_prefix }}/bundle/programs/server"
+    sudo_user: "{{ grid_user }}"
 
   - name: Install supervisord config
     template: src=gridd.conf.j2 dest=/etc/supervisor/conf.d/gridd.conf
