@@ -43,13 +43,12 @@ es_item_template_source:
         locationNation:
           type: string
           index: not_analyzed
-google_user: "{{ google_user }}"
-google_password: "{{ google_password }}"
 fields_spreadsheet_id: 1lPVgmRQiqkPqWpjCRvglT7PPrGFPw5CDAsxKa7YKjg8
-events_spreadsheet_id: 0Aq1-11VlGrfldHd0eHhFQkx4a09xR2JJTERyaVZnVWc
+events_spreadsheet_id: 1X17MyE5z6H7KgpY25ZYyziwchkyLnUVYFt15A4myh5s
 zotero_library_id: 252452
 zotero_library_type: group
 zotero_api_key: "{{ zotero_api_key }}"
 analytics_api_key: "{{ analytics_api_key }}"
+google_oauth_refresh_token: "{{ google_oauth_refresh_token }}"
 google_oauth_client_id: "{{ google_oauth_client_id }}"
 google_oauth_client_secret: "{{ google_oauth_client_secret }}"
