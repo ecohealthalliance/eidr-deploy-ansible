@@ -8,3 +8,20 @@
   ProxyPass / http://localhost:{{ meteor_port }}/
   ProxyPassReverse / http://localhost:{{ meteor_port }}/
 </VirtualHost>
+
+
+<VirtualHost *:443>
+  ServerName {{ apache_url }}
+  ProxyPreserveHost On
+  RewriteEngine on
+  RewriteCond %{HTTP:UPGRADE} ^WebSocket$ [NC]
+  RewriteCond %{HTTP:CONNECTION} ^Upgrade$ [NC]
+  RewriteRule .* ws://localhost:{{ meteor_port }}%{REQUEST_URI} [P]
+  ProxyPass / http://localhost:{{ meteor_port }}/
+  ProxyPassReverse / http://localhost:{{ meteor_port }}/
+
+  SSLEngine on
+  SSLCertificateFile /etc/apache2/ssl/apache.crt
+  SSLCertificateKeyFile /etc/apache2/ssl/apache.key
+  SSLCipherSuite HIGH:!aNULL:!MD5
+</VirtualHost>
