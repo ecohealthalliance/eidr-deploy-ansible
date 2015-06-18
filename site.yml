@@ -7,6 +7,7 @@
     - mongodb
     - node
     - { role: grid, sudo_user: "{{ grid_user }}" }
+    - { role: ansible-elasticsearch, tags: ["elasticsearch"] }
     - { role: elasticsearch-mongo-river, tags: ["elasticsearch"] }
   vars_files:
     - secure.yml
