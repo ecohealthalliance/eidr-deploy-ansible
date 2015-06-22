@@ -1,12 +1,11 @@
+ServerTokens Prod
+ServerSignature Off
+
 <VirtualHost *:80>
+  #Disabling plaintext http and redirecting to https
+  #Make sure apache_url has https in it
   ServerName {{ apache_url }}
-  ProxyPreserveHost On
-  RewriteEngine on
-  RewriteCond %{HTTP:UPGRADE} ^WebSocket$ [NC]
-  RewriteCond %{HTTP:CONNECTION} ^Upgrade$ [NC]
-  RewriteRule .* ws://localhost:{{ meteor_port }}%{REQUEST_URI} [P]
-  ProxyPass / http://localhost:{{ meteor_port }}/
-  ProxyPassReverse / http://localhost:{{ meteor_port }}/
+  Redirect permanent / {{ apache_url  }}/
 </VirtualHost>
 
 
@@ -19,7 +18,6 @@
   RewriteRule .* ws://localhost:{{ meteor_port }}%{REQUEST_URI} [P]
   ProxyPass / http://localhost:{{ meteor_port }}/
   ProxyPassReverse / http://localhost:{{ meteor_port }}/
-
   SSLEngine on
   SSLCertificateFile /etc/apache2/ssl/apache.crt
   SSLCertificateKeyFile /etc/apache2/ssl/apache.key
