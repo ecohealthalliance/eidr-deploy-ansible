@@ -1,0 +1,19 @@
+---
+
+  - name: Install netcat
+    apt: name=netcat
+    tags: netcat-webserver
+
+  - name: Copy custom-error.html
+    template: src=custom-error.html.j2 dest=/var/custom-error.html
+    tags: netcat-webserver
+
+  - name: Copy nc supervisor conf file
+    template: src=nc.supervisor.conf.j2 dest=/etc/supervisor/conf.d/nc.conf
+    notify: supervisor restarted
+    tags: netcat-webserver
+
+  - name: Copy netcat shell script
+    template: src=start-netcat.sh dest=/var/start-netcat.sh mode=0755
+    notify: netcat-webserver restarted
+    tags: netcat-webserver

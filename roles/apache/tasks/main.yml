@@ -12,6 +12,8 @@
       - proxy_wstunnel
       - rewrite
       - ssl
+      - proxy_balancer
+      - lbmethod_byrequests
     tags: apache
 
   - name: Create ssl directory
@@ -28,6 +30,7 @@
 
   - name: Configure apache proxy
     template: src=proxy.conf.j2 dest=/etc/apache2/conf-available/proxy.conf
+    notify: restart apache2
     tags: apache
 
   - name: Configure apache ports
@@ -42,3 +45,5 @@
     command: a2enconf proxy
     notify: restart apache2
     tags: apache
+
+
