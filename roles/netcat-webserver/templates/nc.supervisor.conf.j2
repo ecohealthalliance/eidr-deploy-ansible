@@ -1,0 +1,10 @@
+[program:netcat-webserver]
+command=bash /var/start-netcat.sh
+process_name=nc -l 8888
+numprocs=1
+autostart=true
+autorestart=true
+startsecs=1
+logfile_maxbytes=150MB
+logfile_backups=10
+loglevel=info

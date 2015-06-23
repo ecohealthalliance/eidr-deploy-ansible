@@ -1,0 +1,11 @@
+---
+
+  - name: netcat-webserver restarted
+    supervisorctl: name=netcat-webserver state=restarted
+    sudo: yes
+
+  - name: supervisor restarted
+    service: name=supervisor state=restarted
+    sudo: yes
+
+

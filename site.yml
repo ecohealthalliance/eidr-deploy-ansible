@@ -3,6 +3,7 @@
 - hosts: grid
   roles:
     - common
+    - netcat-webserver
     - apache
     - mongodb
     - node
