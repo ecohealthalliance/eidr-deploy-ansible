@@ -28,21 +28,23 @@
   - name: Create config
     template: src=meteor_config.j2 dest={{ grid_prefix }}/config mode=0755
  
-  - name: Remove bundle directory in case we're updating from bundle
+  - name: Remove bundle directory
     file: path={{ grid_prefix }}/bundle state=absent
-    when: grid.changed
  
   - name: Remove build directory
     file: path={{ grid_prefix }}/build state=absent
-    when: grid.changed
 
   - name: meteor bundle
     command: meteor build build chdir={{ grid_prefix }}
-    when: grid.changed
 
   - name: Unarchive bundle
     unarchive: src={{ grid_prefix }}/build/grid.tar.gz dest={{ grid_prefix }} copy=no
-    when: grid.changed
+    
+  - name: Install npm modules
+    command: npm install
+    args:
+      chdir: "{{ grid_prefix }}/bundle/programs/server"
+    sudo_user: "{{ grid_user }}"
 
   - name: Install supervisord config
     template: src=gridd.conf.j2 dest=/etc/supervisor/conf.d/gridd.conf
