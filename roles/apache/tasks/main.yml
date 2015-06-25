@@ -12,6 +12,7 @@
       - proxy_wstunnel
       - rewrite
       - ssl
+      - headers
     tags: apache
 
   - name: Create ssl directory

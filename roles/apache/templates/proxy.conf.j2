@@ -1,6 +1,7 @@
 ServerTokens Prod
 ServerSignature Off
 ServerName {{ apache_url }}
+Header always set "Access-Control-Allow-Origin" "*"
 
 <VirtualHost *:80>
   #Disabling plaintext http and redirecting to https
