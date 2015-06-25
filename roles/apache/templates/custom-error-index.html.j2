@@ -1,4 +1,19 @@
 <html>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  <script>
+    function checkSiteStatus() {
+      $.ajax({
+        url: '{{ apache_url }}',
+        success: function(data,status,xhr) {
+          if (!data.includes("EIDR is being updated") && data.includes("meteor")) {
+            window.location='{{ apache_url }}';
+          }
+        }
+      });
+      console.log('Site still down.');
+    }
+    setInterval(checkSiteStatus,30000);
+  </script>
   <div align="center">
     <img src="https://raw.githubusercontent.com/ecohealthalliance/grid/master/public/images/eidr-logo.png?token=ADQFP8aP6Qy8q75aMasRDNhPwLRYjY4hks5VlADfwA%3D%3D">
     <p style="font-size:40px; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">EIDR is being updated, please try again in a few minutes.
