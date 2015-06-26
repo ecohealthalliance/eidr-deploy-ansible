@@ -23,3 +23,6 @@
 
 - name: Create grid environment configuration
   template: src=config.j2 dest=/home/{{ grid_user }}/grid_config group={{ grid_group }} owner={{ grid_user }}
+
+- name: Ensure grid is stopped
+  supervisorctl: name=grid state=stopped
