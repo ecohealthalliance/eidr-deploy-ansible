@@ -20,11 +20,12 @@ Header always set "Access-Control-Allow-Origin" "*"
   RewriteCond %{HTTP:UPGRADE} ^WebSocket$ [NC]
   RewriteCond %{HTTP:CONNECTION} ^Upgrade$ [NC]
   RewriteRule .* ws://localhost:{{ meteor_port }}%{REQUEST_URI} [P]
+  ProxyPass /deploying http://localhost:8080/deploying/
   ProxyPass / http://localhost:{{ meteor_port }}/
   ProxyPassReverse / http://localhost:{{ meteor_port }}/
   SSLEngine on
   SSLCertificateFile /etc/apache2/ssl/apache.crt
   SSLCertificateKeyFile /etc/apache2/ssl/apache.key
   SSLCipherSuite HIGH:!aNULL:!MD5
-  ErrorDocument 503 {{ apache_url.replace('https','http') }}:8080
+  ErrorDocument 503 {{ apache_url }}/deploying/
 </VirtualHost>
