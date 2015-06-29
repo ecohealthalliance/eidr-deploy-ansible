@@ -1,5 +1,13 @@
 <html>
+<head>
+  <title>EIDR</title>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  </head>
+<body>
+  <div style="margin-top:20px; text-align:center;">
+    <img src="/deploying/eidr-logo.png">
+    <p style="font-size:40px; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">EIDR is being updated, please try again in a few minutes.
+  </div>
   <script>
     function checkSiteStatus() {
       $.ajax({
@@ -14,8 +22,5 @@
     }
     setInterval(checkSiteStatus,30000);
   </script>
-  <div align="center">
-    <img src="/deploying/eidr-logo.png">
-    <p style="font-size:40px; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">EIDR is being updated, please try again in a few minutes.
-  </div>
+</body>
 </html>
