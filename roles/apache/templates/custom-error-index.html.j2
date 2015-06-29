@@ -11,9 +11,9 @@
   <script>
     function checkSiteStatus() {
       $.ajax({
-        url: '{{ apache_url }}',
-        success: function(data,status,xhr) {
-          if (!data.includes("EIDR is being updated") && data.includes("meteor")) {
+        url: '{{ apache_url }}/sockjs/info',
+         success: function(data,status,xhr) {
+          if (data.websocket) {
             window.location='{{ apache_url }}';
           }
         }
