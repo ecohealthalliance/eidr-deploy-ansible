@@ -12,6 +12,7 @@
       - proxy_wstunnel
       - rewrite
       - ssl
+      - headers
     tags: apache
 
   - name: Create ssl directory
@@ -32,6 +33,14 @@
 
   - name: Configure apache ports
     template: src=ports.conf.j2 dest=/etc/apache2/ports.conf
+    tags: apache
+
+  - name: Create DocumentRoot for custom error page
+    file: path=/var/www/deploying state=directory
+    tags: apache
+
+  - name: Copy custom error page html file
+    template: src=custom-error-index.html.j2 dest=/var/www/deploying/index.html
     tags: apache
 
   - name: Enable apache service

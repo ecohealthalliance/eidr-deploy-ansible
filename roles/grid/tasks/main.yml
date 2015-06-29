@@ -25,6 +25,11 @@
       chdir: "{{ grid_prefix }}"
     when: grid.changed
 
+  - name: Copy EIDR logo to custom error web directory
+    shell: "cp {{ grid_prefix }}/public/images/eidr-logo.png /var/www/deploying/"
+    sudo: yes
+    sudo_user: root
+
   - name: Create config
     template: src=meteor_config.j2 dest={{ grid_prefix }}/config mode=0755
  
