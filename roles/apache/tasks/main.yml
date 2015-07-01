@@ -27,6 +27,10 @@
     template: src=apache.key.j2 dest=/etc/apache2/ssl/apache.key
     tags: apache
 
+  - name: Install comodo ssl bundle
+    template: src=comodo.bundle.j2 dest=/etc/apache2/ssl/comodo.bundle
+    tags: apache
+
   - name: Configure apache proxy
     template: src=proxy.conf.j2 dest=/etc/apache2/conf-available/proxy.conf
     tags: apache
