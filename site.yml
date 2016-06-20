@@ -1,6 +1,6 @@
 ---
 
-- hosts: grid
+- hosts: prod
   roles:
     - common
     - apache
