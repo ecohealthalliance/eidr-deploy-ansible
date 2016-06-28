@@ -26,9 +26,9 @@ ServerName {{ apache_url }}
   ProxyPass / http://localhost:{{ meteor_port }}/
   ProxyPassReverse / http://localhost:{{ meteor_port }}/
   SSLEngine on
-  SSLCertificateFile /etc/apache2/ssl/apache.crt
-  SSLCertificateKeyFile /etc/apache2/ssl/apache.key
-  SSLCertificateChainFile /etc/apache2/ssl/comodo.bundle
+  SSLCertificateFile /etc/letsencrypt/live/eidr.ecohealthalliance.org/cert.pem
+  SSLCertificateKeyFile /etc/letsencrypt/live/eidr.ecohealthalliance.org/privkey.pem
+  SSLCertificateChainFile /etc/letsencrypt/live/eidr.ecohealthalliance.org/chain.pem
   SSLCipherSuite HIGH:!aNULL:!MD5
   ErrorDocument 503 {{ apache_url }}/deploying/
 </VirtualHost>
