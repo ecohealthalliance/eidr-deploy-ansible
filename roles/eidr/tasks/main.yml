@@ -1,0 +1,78 @@
+---
+
+  - name: Install meteor
+    shell: curl https://install.meteor.com | /bin/sh chdir=/tmp creates=/usr/local/bin/meteor
+    sudo: yes
+    sudo_user: root
+    
+  - name: Create .ssh directory
+    file: path=~/.ssh group={{ eidr_group }} owner={{ eidr_user }} state=directory
+    
+  - name: Create github key
+    copy: content="{{git_key}}" dest=~/.ssh/id_rsa mode="0700"
+    
+  - name: Sync EIDR code
+    git: 
+      repo: https://github.com/ecohealthalliance/eidr.git
+      dest: "{{ eidr_prefix }}"
+      version: "{{ eidr_git_version }}"
+    register: eidr
+  
+  - name: Remove untracked files
+    shell: "git clean -f"
+    args:
+      chdir: "{{ eidr_prefix }}"
+    when: eidr.changed
+
+  - name: Copy EIDR logo to custom error web directory
+    shell: "cp {{ eidr_prefix }}/public/images/eidr-logo.png /var/www/deploying/"
+    sudo: yes
+    sudo_user: root
+
+  - name: Create config
+    template: src=meteor_config.j2 dest={{ eidr_prefix }}/config mode=0755
+ 
+  - name: Remove bundle directory
+    file: path={{ eidr_prefix }}/bundle state=absent
+ 
+  - name: Remove build directory
+    file: path={{ eidr_prefix }}/build state=absent
+
+  - name: meteor bundle
+    command: meteor build build chdir={{ eidr_prefix }}
+
+  - name: Unarchive bundle
+    unarchive: src={{ eidr_prefix }}/build/grid.tar.gz dest={{ eidr_prefix }} copy=no
+    
+  - name: Install npm modules
+    command: npm install
+    args:
+      chdir: "{{ eidr_prefix }}/bundle/programs/server"
+    sudo_user: "{{ eidr_user }}"
+
+  - name: Install supervisord config
+    template: src=eidrd.conf.j2 dest=/etc/supervisor/conf.d/eidrd.conf
+    sudo: yes
+    sudo_user: root
+    notify: reload supervisor
+    with_items:
+      - eidr
+
+  - name: Create import config
+    tags: [import]
+    template: src=import_config.j2 dest={{ eidr_prefix }}/.scripts/config.py
+
+  - name: Set up import python environment
+    tags: [import]
+    pip: requirements={{ eidr_prefix }}/.scripts/requirements.txt virtualenv={{ eidr_prefix }}/.scripts/env
+
+  - name: Run import
+    shell: "env/bin/python import_from_spreadsheets.py"
+    tags: [import]
+    args:
+      chdir: "{{ eidr_prefix }}/.scripts"
+
+  - name: Restart EIDR process
+    supervisorctl: name="eidr" state=restarted
+    sudo: yes
+    sudo_user: root

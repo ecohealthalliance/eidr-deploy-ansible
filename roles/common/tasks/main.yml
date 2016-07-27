@@ -15,14 +15,14 @@
   with_items:
     - virtualenv
 
-- name: Create grid group
-  user: name={{ grid_group }}
+- name: Create EIDR group
+  user: name={{ eidr_group }}
 
-- name: Create grid user
-  user: name={{ grid_user }} group={{ grid_group }} shell=/bin/bash
+- name: Create EIDR user
+  user: name={{ eidr_user }} group={{ eidr_group }} shell=/bin/bash
 
-- name: Create grid environment configuration
-  template: src=config.j2 dest=/home/{{ grid_user }}/grid_config group={{ grid_group }} owner={{ grid_user }}
+- name: Create EIDR environment configuration
+  template: src=config.j2 dest=/home/{{ eidr_user }}/grid_config group={{ eidr_group }} owner={{ eidr_user }}
 
-- name: Ensure grid is stopped
-  supervisorctl: name=grid state=stopped
+- name: Ensure EIDR is stopped
+  supervisorctl: name=eidr state=stopped

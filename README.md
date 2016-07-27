@@ -1,4 +1,4 @@
-Ansible deployment for GRID.
+Ansible deployment for EIDR.
 
 ### Deploying to an AWS instance
 

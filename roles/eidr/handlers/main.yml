@@ -1,6 +1,6 @@
 ---
 
   - name: mongo restarted
-    supervisorctl: name=grid state=restarted
+    supervisorctl: name=eidr state=restarted
     sudo: yes
     sudo_user: root
