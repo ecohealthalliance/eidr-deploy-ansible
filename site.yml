@@ -8,7 +8,7 @@
     - node
     - role: eidr
       eidr_git_version: "2e491f420d1524e73d4f38e200a41d969e40119d"
-      sudo_user: "{{ eidr_user }}"
+      tags: eidr
     - role: ansible-elasticsearch
       tags: elasticsearch
     - role: elasticsearch-mongo-river

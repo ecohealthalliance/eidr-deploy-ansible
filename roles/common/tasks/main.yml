@@ -8,6 +8,7 @@
     - python-pip
     - python-dev
     - supervisor
+    - acl
 
 - name: Install global python modules
   pip: name={{item}}
@@ -24,5 +25,5 @@
 - name: Create EIDR environment configuration
   template: src=config.j2 dest=/home/{{ eidr_user }}/grid_config group={{ eidr_group }} owner={{ eidr_user }}
 
-- name: Ensure EIDR is stopped
-  supervisorctl: name=eidr state=stopped
+# - name: Ensure EIDR is stopped
+#   supervisorctl: name=eidr state=stopped

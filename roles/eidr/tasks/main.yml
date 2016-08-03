@@ -2,15 +2,9 @@
 
   - name: Install meteor
     shell: curl https://install.meteor.com | /bin/sh chdir=/tmp creates=/usr/local/bin/meteor
-    sudo: yes
-    sudo_user: root
-    
-  - name: Create .ssh directory
-    file: path=~/.ssh group={{ eidr_group }} owner={{ eidr_user }} state=directory
-    
-  - name: Create github key
-    copy: content="{{git_key}}" dest=~/.ssh/id_rsa mode="0700"
-    
+    become: yes
+    become_user: root
+
   - name: Sync EIDR code
     git: 
       repo: https://github.com/ecohealthalliance/eidr.git
@@ -26,8 +20,8 @@
 
   - name: Copy EIDR logo to custom error web directory
     shell: "cp {{ eidr_prefix }}/public/images/eidr-logo.png /var/www/deploying/"
-    sudo: yes
-    sudo_user: root
+    become: yes
+    become_user: root
 
   - name: Create config
     template: src=meteor_config.j2 dest={{ eidr_prefix }}/config mode=0755
@@ -48,12 +42,11 @@
     command: npm install
     args:
       chdir: "{{ eidr_prefix }}/bundle/programs/server"
-    sudo_user: "{{ eidr_user }}"
 
   - name: Install supervisord config
     template: src=eidrd.conf.j2 dest=/etc/supervisor/conf.d/eidrd.conf
-    sudo: yes
-    sudo_user: root
+    become: yes
+    become_user: root
     notify: reload supervisor
     with_items:
       - eidr
@@ -74,5 +67,5 @@
 
   - name: Restart EIDR process
     supervisorctl: name="eidr" state=restarted
-    sudo: yes
-    sudo_user: root
+    become: yes
+    become_user: root
