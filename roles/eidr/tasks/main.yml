@@ -65,6 +65,16 @@
     args:
       chdir: "{{ eidr_prefix }}/.scripts"
 
+  - name: Create createSearchFields.js
+    tags: [import]
+    template: src=createSearchFields.js dest={{ eidr_prefix }}/.scripts/createSearchFields.js
+
+  - name: Create search fields on mongo collection
+    tags: [import]
+    shell: "mongo localhost:{{ meteor_mongo_port }}/{{ meteor_db_name }} createSearchFields.js"
+    args:
+      chdir: "{{ eidr_prefix }}/.scripts"
+
   - name: Restart EIDR process
     supervisorctl: name="eidr" state=restarted
     become: yes
