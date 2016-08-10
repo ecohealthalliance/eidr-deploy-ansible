@@ -1,3 +1,0 @@
-[submodule "roles/ansible-elasticsearch"]
-	path = roles/ansible-elasticsearch
-	url = https://github.com/Traackr/ansible-elasticsearch.git
