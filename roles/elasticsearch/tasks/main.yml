@@ -118,3 +118,9 @@
 # Register Elasticsearch service to start on boot
 - name: Ensure Elasticsearch is started on boot
   service: name=elasticsearch enabled={{ elasticsearch_service_startonboot }} state={{ elasticsearch_service_state }}
+
+# Add supervisor config file for elasticsearch
+- name: supervisor config file
+  template: src=supervisor-config.j2 dest=/etc/supervisor/conf.d/elasticsearchd.conf
+
+
